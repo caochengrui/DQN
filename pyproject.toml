@@ -33,19 +33,6 @@ dependencies = [
 [tool.setuptools_scm]
 write_to = "DQN/_version.py"
 
-[project.optional-dependencies]
-tests = [
-    # Run tests and coverage
-    "pytest",
-    "pytest-cov",
-    # Type check
-    "mypy",
-    # Lint code and format
-    "ruff",
-    # Reformat
-    "black",
-]
-
 [project.urls]
 "Homepage" = "https://github.com/caochengrui/DQN"
 "Bug Tracker" = "https://github.com/caochengrui/DQN/issues"
@@ -82,24 +69,3 @@ show_error_codes = true
 #   )"""
 # plugins = ["numpy.typing.mypy_plugin"]
 # disable_error_code = "assignment"
-
-[tool.pytest.ini_options]
-# Deterministic ordering for tests; useful for pytest-xdist.
-# env = ["PYTHONHASHSEED=0"]
-
-filterwarnings = []
-markers = [
-    "expensive: marks tests as expensive (deselect with '-m \"not expensive\"')",
-]
-
-[tool.coverage.run]
-disable_warnings = ["couldnt-parse"]
-branch = false
-omit = ["tests/*", "DQN/_version.py"]
-
-[tool.coverage.report]
-exclude_lines = [
-    "pragma: no cover",
-    "raise NotImplementedError()",
-    "if typing.TYPE_CHECKING:",
-]
