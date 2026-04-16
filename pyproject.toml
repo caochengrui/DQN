@@ -27,6 +27,7 @@ dependencies = [
     "gymnasium[classic-control,other]>=0.29.1,<1.1.0",
     "scikit-learn",
     "torch>=2.4.0",
+    "opencv-python>=4.6.0",
 ]
 
 [tool.setuptools_scm]
@@ -46,8 +47,8 @@ tests = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/araffin/rlss23-dqn"
-"Bug Tracker" = "https://github.com/araffin/rlss23-dqn/issues"
+"Homepage" = "https://github.com/caochengrui/DQN"
+"Bug Tracker" = "https://github.com/caochengrui/DQN/issues"
 
 [tool.ruff]
 # Same as Black.
