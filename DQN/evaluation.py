@@ -6,6 +6,7 @@ warnings.filterwarnings("ignore",category=SyntaxWarning,message=r"invalid escape
 import gymnasium as gym
 import numpy as np
 from gymnasium import spaces
+from torch import nn
 
 
 try:
@@ -18,15 +19,15 @@ except ImportError:
     gym_v1 = True
 
 from DQN.collect_data import epsilon_greedy_action_selection
-from DQN.q_network import QNetwork
 
 
 def evaluate_policy(
     eval_env: gym.Env,
-    q_net: QNetwork,
+    q_net: nn.Module,
     n_eval_episodes: int,
     eval_exploration_rate: float = 0.0,
     video_name: Optional[str] = None,
+    device: str = "auto",
 ) -> None:
     """
     Evaluate the policy by computing the average episode reward
@@ -37,7 +38,10 @@ def evaluate_policy(
     :param n_eval_episodes: The number of episodes to evaluate the policy on
     :param eval_exploration_rate: The exploration rate to use during evaluation
     :param video_name: When set, the filename of the video to record.
+    :param device: PyTorch device. "auto" detects from the q_net parameters.
     """
+    if device == "auto":
+        device = next(q_net.parameters()).device.type
     # Setup video recorder
     video_recorder = None
 
@@ -76,6 +80,7 @@ def evaluate_policy(
                 obs,
                 exploration_rate=eval_exploration_rate,
                 action_space=eval_env.action_space,
+                device=device,
             )
             # Render
             if eval_env.render_mode is not None:  # pragma: no cover

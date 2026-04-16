@@ -2,13 +2,13 @@ import gymnasium as gym
 import numpy as np
 import torch as th
 from gymnasium import spaces
+from torch import nn
 
-from DQN.q_network import QNetwork
 from DQN.replay_buffer import ReplayBuffer
 
 
 def epsilon_greedy_action_selection(
-    q_net: QNetwork,
+    q_net: nn.Module,
     observation: np.ndarray,
     exploration_rate: float,
     action_space: spaces.Discrete,
@@ -47,11 +47,12 @@ def epsilon_greedy_action_selection(
 
 def collect_one_step(
     env: gym.Env,
-    q_net: QNetwork,
+    q_net: nn.Module,
     replay_buffer: ReplayBuffer,
     obs: np.ndarray,
     exploration_rate: float = 0.1,
     verbose: int = 0,
+    device: str = "auto",
 ) -> np.ndarray:
     """
     Collect one transition and fill the replay buffer following an epsilon greedy policy.
@@ -64,11 +65,15 @@ def collect_one_step(
         probability to select a random action,
         this is "epsilon".
     :param verbose: The verbosity level (1 to print some info).
+    :param device: PyTorch device. "auto" detects from the q_net parameters.
     :return: The last observation (important when collecting data multiple times).
     """
     assert isinstance(env.action_space, spaces.Discrete)
 
-    action = epsilon_greedy_action_selection(q_net, obs, exploration_rate, env.action_space)
+    if device == "auto":
+        device = next(q_net.parameters()).device.type
+
+    action = epsilon_greedy_action_selection(q_net, obs, exploration_rate, env.action_space, device=device)
     next_obs, reward, terminated, truncated, info = env.step(action)
     replay_buffer.store_transition(obs, next_obs, action, float(reward), terminated)
     # Update current observation
